@@ -5,7 +5,7 @@
 
 .. _wg-charter:
 
-FG-TIDA WG<n>: <Full name of the Working Group> (<ACRONYM>)
+FG-TIDA WG6: WG6-ATHENA-charter (ATHENA)
 =============================================================
 
 Charter Information
@@ -16,13 +16,13 @@ Charter Information
    :widths: 30 70
 
    * - **Charter version**
-     - <v0.x>
+     - v0.1
 
    * - **Date**
-     - <YYYY-MM-DD>
+     - 2026-11-24
 
    * - **Status**
-     - <Draft / Under review / Approved by FG-TIDA on YYYY-MM-DD>
+     - Draft
 
 
 1. Group Information
@@ -48,25 +48,26 @@ Charter Information
      - Content
 
    * - Working group name and acronym
-     - <Full name> (<ACRONYM>)
+     - WG6-ATHENA-charter (ATHENA)
 
    * - FG-TIDA theme(s) covered
-     - <Theme(s) from the FG-TIDA Terms of Reference>
+     - [Theme] [Theme] Network-Native Governance and Trust Enforcement for Agentic AI #10
+     - [Theme] ATHENA: Telco-Grade Identity and Delegation Architecture for Agentic AI #34
 
    * - Chair(s) / co-chairs
-     - <Name, affiliation>
+     - Gianpaolo Scalone, Vodafone
 
    * - Editor(s) of the main deliverables
-     - <Name, affiliation, if known>
+     - Gianpaolo Scalone, Vodafone
 
    * - Mailing list
      - <Mailing list>
 
    * - Repository and issue tracker
-     - <GitHub repository URL>
+     - https://github.com/fg-tida-wg6/WG6-ATHENA-charter
 
    * - Charter status and version
-     - <Status and version>
+     - Draft, V0.1
 
 
 2. Background and Problem Statement
@@ -96,7 +97,14 @@ Charter Information
    - claims about a particular vendor or product;
    - undefined buzzwords.
 
-<Describe the background and problem here.>
+An AI agent acting on behalf of an individual or organization may delegate part of a task to another agent. A service receiving a request from that second agent needs to answer three questions. Who is the agent acting for? Who gave it permission to perform this action? Is that permission still valid? The individual or organization from whom the authority originates is the principal.
+
+ATHENA starts from telco-grade identity. Operators already provision and manage SIM/eSIM credentials at scale, authenticate subscriptions and rely on each other’s authentication through roaming. Consider an agent anchored to a SIM/eSIM-backed subscription that delegates a task to a cloud-based sub-agent. The operator can attest to the subscription. The service receiving the sub-agent’s request still needs to establish the link back to the principal and verify that each delegation stayed within the authority granted by its parent.
+
+Workload identity, verifiable credentials and authorization mechanisms provide building blocks. The gap becomes clear when permissions change. A principal may allow an agent to compare prices and make purchases, then withdraw only the permission to buy. The subscription is still active, the agent’s credential is still valid and the sub-agent can still compare prices. When the sub-agent submits an order, how does the merchant know that the permission to buy has been withdrawn?
+
+This is where network APIs could play a role. Which identity and subscription status can an operator attest through an API? Where the operator also manages the delegation, can it confirm that a specific permission is still valid? Where another party manages it, what evidence does the service need from that party? The challenge is to make that information available across operators and services, at the time of the request, without disclosing the principal’s identity unnecessarily.
+
 
 
 3. Goals
@@ -125,11 +133,15 @@ Charter Information
    Do not claim authority reserved for ITU-T Study Groups, such as approving
    ITU-T Recommendations.
 
-* The Working Group will <goal 1>.
+* The Working Group will describe a telco-grade reference architecture, using SIM/eSIM-backed subscriptions as a starting point, for binding an agent to an accountable individual or organization. It will identify which elements can also be used by other accountable identity providers.
 
-* The Working Group will <goal 2>.
+* It will define requirements for verifying a delegation chain from the principal through an agent to its sub-agents, so a service can establish who granted authority and whether each delegation stayed within the limits of its parent.
 
-* The Working Group will <goal 3>.
+* It will identify what a service needs to know when an agent identity, credential or delegation is suspended, expires or is revoked, and what evidence is needed to resume operation after compromise.
+
+* It will assess how network APIs could expose current subscription, identity and delegation status to authorized services, including which party can attest that a specific permission is still valid and how little information about the principal needs to be disclosed.
+
+* It will map these requirements against XSTR.ATHENA and relevant identity and authorization specifications, identify gaps, and recommend architectural principles for verification across operators and non-telco services.
 
 
 4. Scope and Non-Goals
@@ -145,11 +157,14 @@ In Scope
 
    Identify clearly what work belongs to this Working Group.
 
-* <In-scope item 1>
+* Telco-grade identity anchoring. How an operator can use a SIM/eSIM-backed subscription to bind an agent to an accountable individual or organization, what evidence supports that binding, and how other accountable identity providers can establish an equivalent binding.
 
-* <In-scope item 2>
+* Delegation across trust domains. What a service needs to verify who delegated authority to whom, whether each agent was entitled to delegate, and whether the requested action falls within every upstream grant. This includes a SIM/eSIM-backed agent delegating to a cloud-based sub-agent with no subscription of its own.
 
-* <In-scope item 3>
+* Identity and delegation lifecycle. How provisioning, suspension, expiry, revocation and recovery after compromise affect the evidence a service can rely on. This includes cases where the subscription remains active but a delegation has been withdrawn, and where an agent resumes operation with a replacement credential.
+
+* Network APIs and minimum disclosure. What an authorized service needs to learn at the time of a request, which party can attest it, and how current the evidence must be. ATHENA will examine when an operator can confirm subscription or identity status, when it can also confirm a delegated permission, and when the service needs evidence from another authority.
+
 
 
 Out of Scope / Non-Goals
@@ -169,12 +184,16 @@ Out of Scope / Non-Goals
 
    Avoid defining the same deliverable under more than one WG.
 
-* The Working Group will not <non-goal 1>.
+* The Working Group will not work on Task authorization and enforcement. The proposed APMA group addresses how task privileges are granted, adjusted and revoked. Theme #10 addresses network enforcement. ATHENA’s contribution to both is the evidence of identity, delegation and current status that those decisions depend on.
 
-* The Working Group will not <non-goal 2>.
+* The Working Group will not work on Protocol and API specifications. ATHENA will identify information requirements and assess existing interfaces. Defining new network API endpoints, credential formats, SIM/eSIM profiles or authentication protocols is outside its scope.
 
-* <Topic> is outside this WG's scope and is addressed by <WG / SG17 Question /
-  external organization>.
+* The Working Group will not work on Legal and application-specific policy. Legal responsibility for an agent’s actions belongs with Theme #14. Guardian authority and child-specific safeguards belong with Theme #25. Both can provide use cases for testing the architecture
+
+* The Working Group will not work on Remote attestation. ATHENA may use attestation results as evidence for issuing or maintaining an agent identity. Attestation mechanisms and evidence formats belong with Theme #22.
+
+* Task-level authorization and privilege management are outside ATHENA’s scope and are addressed by the proposed APMA Working Group. ATHENA will identify the evidence a service needs to verify who delegated authority, what limits apply and whether the delegation is still valid.
+
 
 
 5. Programme of Work and Deliverables
@@ -208,14 +227,16 @@ Out of Scope / Non-Goals
      - Input documents
 
    * - 1
-     - <Deliverable 1>
-     - <Description>
-     - <Input, if any>
-
-   * - 2
-     - <Deliverable 2>
-     - <Description>
-     - <Input, if any>
+     - Telco-Grade Identity and Delegation for Agentic AI (Technical Report)
+     - The report will outline a reference architecture using SIM/eSIM-backed
+       subscriptions as a starting point. One worked example will follow an
+       agent delegating a task to a cloud-based sub-agent. It will identify
+       what a service needs to verify when the principal withdraws one
+       permission while the subscription remains active, which party can
+       attest to each fact, and where a network API could provide current
+       status with minimal disclosure.
+     - ITU-T XSTR.ATHENA and FG-TIDA Theme #34, including the discussion
+       of delegation and revocation.
 
 
 6. Milestones
@@ -249,11 +270,12 @@ Out of Scope / Non-Goals
    * - Target date
      - Milestone
 
-   * - <Meeting / YYYY-MM>
-     - First draft of <deliverable 1> available in the repository.
+   * - January 2027 before FG-TIDA meeting
+     - First draft of deliverable 1 available in the repository. The Working Group will make the first draft of the ATHENA Technical
+       Report available in the repository for discussion. It will include an initial architecture outline and one worked delegation example.
 
-   * - <Meeting / YYYY-MM>
-     - <Deliverable 1> agreed by the Working Group.
+   * - January 2027  FG-TIDA meeting
+     - Deliverable 1 agreed by the Working Group.
 
    * - <Meeting / YYYY-MM>
      - <Deliverable 1> submitted to the FG-TIDA plenary.
@@ -289,11 +311,18 @@ Out of Scope / Non-Goals
    * - Group / Organization
      - Coordination or dependency
 
-   * - <FG-TIDA WG / SG17 Question / organization>
-     - <Describe the relationship>
+  * - ITU-T SG17 Q1/17
+     - The Working Group will use XSTR.ATHENA as an input to the reference
+       architecture and identify any additional requirements that arise when
+       a SIM/eSIM-backed agent delegates to a sub-agent in another trust domain.
 
-   * - <Organization>
-     - <Describe the relationship>
+   * - Proposed FG-TIDA Working Group on Authorization and Privilege
+       Management for AI Agents (APMA, proposal #64)
+     - The Working Group will seek feedback on the worked example in which
+       a principal withdraws one permission while the subscription remains
+       active. ATHENA will describe the evidence a service can verify.
+       The point for review with APMA is how that evidence informs the
+       service's authorization decision.
 
 
 8. Terminology
@@ -389,8 +418,13 @@ This shall be communicated to the FG-TIDA terminology & use cases WG that mainta
 
    Avoid generic disclaimers.
 
-<Describe the relevant security and privacy considerations.>
-
+The report will examine how a service can detect an agent acting on a
+permission that its parent never granted or that the principal has since
+withdrawn, even while the SIM/eSIM-backed subscription remains active.
+Where a network API provides status information, the report will consider
+who may query it, how fresh the evidence must be, and whether the service
+can verify the permission without learning the subscriber's identity or
+receiving an identifier that links the subscriber's activity across services.
 
 12. Success Criteria and Conclusion
 -----------------------------------
@@ -410,10 +444,12 @@ This shall be communicated to the FG-TIDA terminology & use cases WG that mainta
 
    Do not describe future approval by SG17 as guaranteed.
 
-The Working Group will have completed its chartered work when
-<success criterion>.
+The Working Group will have completed its chartered work when it submits
+the ATHENA Technical Report to the FG-TIDA plenary. The report will include
+the reference architecture and one worked example showing what a service
+needs to verify when a principal withdraws a delegated permission while
+the SIM/eSIM-backed subscription remains active.
 
-Following completion, <describe the expected next step, if applicable>.
 
 
 13. Revision History
@@ -436,6 +472,6 @@ Following completion, <describe the expected next step, if applicable>.
      - Date
      - Change
 
-   * - 0.1
-     - <YYYY-MM-DD>
-     - First draft
+  * - 0.1
+     - 2026-11-19
+     - First draft of the proposed ATHENA Working Group charter.
